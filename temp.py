@@ -1,20 +1,14 @@
-from metaflow import Flow, Run, namespace
+from metaflow.client.core import namespace, Run, Flow
 
-# Optional: reset to default namespace so you see all runs
-namespace(None)
+def main():
+    # Set namespace if you need a specific one, or None for default
+    namespace(None)
 
-# Load a flow by name
-flow = Flow("TrainActionableInsightsFlow")
+    flow = Flow("TrainActionableInsightsFlow")
+    run = Run("TrainActionableInsightsFlow/223287")  # note: 'Flow' capitalization
+    surrogate_model = run.data.surrogate_model
+    fit_params_xgb = surrogate_model.get_params()["fit_params_xgb"]
+    print(fit_params_xgb)
 
-# Get the latest successful run
-run = flow.latest_successful_run
-print("Run ID:", run.id)
-print("Finished at:", run.finished_at)
-
-# Example: access artifacts from a specific step
-# Replace 'train_model' and 'model_artifact' with real names from your flow
-step = run['train_model']
-task = step.task  # or step['task_id'] if there are multiple
-model = task.data.model_artifact
-
-print(type(model))
+if __name__ == "__main__":
+    main()
